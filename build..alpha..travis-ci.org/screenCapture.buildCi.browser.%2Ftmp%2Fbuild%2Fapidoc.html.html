@@ -1,0 +1,393 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a>complete (v0.4.4)</a>
+</h1>
+<h4>tab completion CLI programs</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.complete">module complete</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.complete">
+            function <span class="apidocSignatureSpan"></span>complete
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.add">
+            function <span class="apidocSignatureSpan">complete.</span>add
+            <span class="apidocSignatureSpan">(opt)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.callback">
+            function <span class="apidocSignatureSpan">complete.</span>callback
+            <span class="apidocSignatureSpan">(last, args, list)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.echo">
+            function <span class="apidocSignatureSpan">complete.</span>echo
+            <span class="apidocSignatureSpan">(text)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.init">
+            function <span class="apidocSignatureSpan">complete.</span>init
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.match">
+            function <span class="apidocSignatureSpan">complete.</span>match
+            <span class="apidocSignatureSpan">(key, list)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.complete.output">
+            function <span class="apidocSignatureSpan">complete.</span>output
+            <span class="apidocSignatureSpan">(key, list)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">complete.</span>installMessage</span>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">complete.</span>list</span>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.complete" id="apidoc.module.complete">module complete</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.complete.complete" id="apidoc.element.complete.complete">
+        function <span class="apidocSignatureSpan"></span>complete
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function complete(options) {
+
+  options = options || {};
+  commands = options.commands || exports.commands || {};
+  opt = options.options || exports.options;
+  program = options.program || exports.program;
+
+  // Ensure scripts
+  ensure(program || getName());
+
+  var argv = process.argv;
+  var index = argv.indexOf('--compgen');
+
+  if (~index) {
+    // Cannot allow any output:
+    process.on('uncaughtException', function() {
+      ;
+    });
+
+    words = argv.slice(index + 1);
+    completeWords();
+
+    // Explanation:
+    // If something asynchronous is happening in a matching
+    // function, we need to stop the module from doing anything
+    // further. This gets caught by the uncaughtException listener
+    // and stops anymore synchronous code from being executed.
+    // Yes, it is hacky.
+    throw 'stop';
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.complete.add" id="apidoc.element.complete.add">
+        function <span class="apidocSignatureSpan">complete.</span>add
+        <span class="apidocSignatureSpan">(opt)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">add = function (opt) {
+  if (Array.isArray(opt)) {
+    opt = opt.join(' ');
+  }
+  // The line feed `echo` adds acts as a
+  // delimiter, so we can always add matches.
+  echo(opt + '');
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// list of items to complete on.
+//
+complete.list = ['apple', 'orange', 'pear', 'lemon', 'mango'];
+
+complete.callback = function(lastSelection, userInput, reducedList) {
+
+  if (lastSelection === 'apple') {
+	complete.<span class="apidocCodeKeywordSpan">add</span>('sauce');
+  }
+};
+
+complete.init();
+
+//
+// continue with the application...
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.complete.callback" id="apidoc.element.complete.callback">
+        function <span class="apidocSignatureSpan">complete.</span>callback
+        <span class="apidocSignatureSpan">(last, args, list)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">callback = function (last, args, list) {
+  ;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.complete.echo" id="apidoc.element.complete.echo">
+        function <span class="apidocSignatureSpan">complete.</span>echo
+        <span class="apidocSignatureSpan">(text)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function echo(text) {
+  if (!text) return;
+  process.stdout.write(text + '\n');
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// Commands
+commands: {
+  'hello': function(words, prev, cur) {
+    complete.output(cur, ['abc', 'def']);
+  },
+  'world': {
+    'hi': function(words, prev, cur) {
+      complete.<span class="apidocCodeKeywordSpan">echo</span>('next');
+    }
+  }
+},
+// Position-independent options.
+// These will attempted to be
+// matched if `commands` fails
+// to match.
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.complete.init" id="apidoc.element.complete.init">
+        function <span class="apidocSignatureSpan">complete.</span>init
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">init = function () {
+  ensure(getName());
+
+  var argc = process.argv.indexOf('--compgen');
+
+  if (~argc) {
+    process.on('uncaughtException', function() {
+      ;
+    });
+
+    compgen(process.argv, argc, complete.callback);
+
+    // If there are still any callbacks on the event loop,
+    // we need to kill the current stack immediately.
+    throw 'stop';
+  }
+
+  return this;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+complete.callback = function(lastSelection, userInput, reducedList) {
+
+  if (lastSelection === 'apple') {
+	complete.add('sauce');
+  }
+};
+
+complete.<span class="apidocCodeKeywordSpan">init</span>();
+
+//
+// continue with the application...
+//
+console.log('program started with the following arguments:', process.argv[2] || 'none provided');
+```
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.complete.match" id="apidoc.element.complete.match">
+        function <span class="apidocSignatureSpan">complete.</span>match
+        <span class="apidocSignatureSpan">(key, list)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function match(key, list) {
+  if (!list) return;
+
+  var type = typeof list;
+  if (type === 'string') {
+    list = [list];
+  } else if (type === 'object' &amp;&amp; !Array.isArray(list)) {
+    list = Object.keys(list);
+  } else if (type !== 'object') {
+    return '';
+  }
+
+  var out = [];
+  var l = list.length;
+  var i = 0;
+
+  for (; i &lt; l; i++) {
+    if (list[i] === '__exec__') continue;
+    if (list[i].indexOf(key) === 0) out.push(list[i]);
+  }
+
+  return out.join(' ');
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.complete.output" id="apidoc.element.complete.output">
+        function <span class="apidocSignatureSpan">complete.</span>output
+        <span class="apidocSignatureSpan">(key, list)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function output(key, list) {
+  if (!list) {
+    list = key;
+    key = words[words.length-1];
+  }
+  return echo(match(key, list));
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+var complete = require('complete');
+
+complete({
+program: 'my-program',
+// Commands
+commands: {
+  'hello': function(words, prev, cur) {
+    complete.<span class="apidocCodeKeywordSpan">output</span>(cur, ['abc', 'def']);
+  },
+  'world': {
+    'hi': function(words, prev, cur) {
+      complete.echo('next');
+    }
+  }
+},
+...</pre></li>
+    </ul>
+
+
+
+
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
